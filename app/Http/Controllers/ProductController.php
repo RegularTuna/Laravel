@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Country;
 use Illuminate\Http\Request;
+use App\Models\Product;
 
-
-class CountryController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $countries = Country::all()->toJson();
+        $products = Product::all()->toJson(); //é como se fizermos select * 
 
-        return $countries;
+        return $products;
     }
 
     /**
@@ -23,27 +22,33 @@ class CountryController extends Controller
      */
     public function store(Request $request)
     {
+        //vai gravar dados
         try {
-        
-            $country = new Country();
-            $country->id = $request -> id;
-            $country->name = $request -> name;
-            $country->save();
+            $product = new Product();
 
+            $product->name = $request -> name;
+            $product->category_id = $request -> category_id;
+            $product->description = $request -> description;
+            $product->price = $request -> price;
+            $product->stock = $request -> stock;
+            $product->image = $request -> image;
+            $product->sku = $request -> sku;
+
+            $product->save();
         } catch (\Exception $e) {
             
             return response()->json([
                 'success' => false,
-                'messsage' => 'Erro ao gravar registo',
-                'data' => [$e->getMessage()]
-            ], 500);
+                'message' => 'Erro ao gravar registo',
+                'data'    => [$e->getMessage()]
+            ], 500); 
         }
-
         return response()->json([
             'success' => true,
             'message' => 'Registo gravado com sucesso',
-            'data' => []
-        ], 201);
+            'data'    => []
+        ], 201); 
+        
     }
 
     /**
@@ -52,10 +57,10 @@ class CountryController extends Controller
     public function show(string $id)
     {
         //vai mostrar 1 registo
-        if (Country::where('id', $id)->exists()){
+        if (Product::where('id', $id)->exists()){
 
-            $country = Country::where('id', $id)->get()->toJson();
-            return response($country,200);
+            $product = Product::where('id', $id)->get()->toJson();
+            return response($product,200);
 
         } else {
 
@@ -74,13 +79,20 @@ class CountryController extends Controller
     {
         try {
             //update de 1 registo
-            if (Country::where('id', $id)->exists()) {
+            if (Product::where('id', $id)->exists()) {
 
             
 
-                $country = Country::find($id);
-                $country->name = $request->name;
-                $country->save();
+                $product = Product::find($id);
+                
+                $product->name = $request -> name;
+                $product->category_id = $request->category_id;
+                $product->description = $request -> description;
+                $product->price = $request -> price;
+                $product->stock = $request -> stock;
+                $product->image = $request -> image;
+                $product->sku = $request -> sku;
+                $product->save();
                 
                 
             }else {
@@ -107,6 +119,7 @@ class CountryController extends Controller
             'message' => 'Registo alterado com sucesso',
             'data'    => []
         ], 201); 
+
     }
 
     /**
@@ -117,10 +130,10 @@ class CountryController extends Controller
         try {
 
             //delete de 1 registo
-            if (Country::where('id', $id)->exists()) {
+            if (Product::where('id', $id)->exists()) {
 
-                $country = Country::find($id);
-                $country->delete();
+                $product = Product::find($id);
+                $product->delete();
             } else {
 
                 return response()->json([
@@ -147,5 +160,4 @@ class CountryController extends Controller
             'data'    => []
         ], 201); 
     }
-    
 }
